@@ -8,7 +8,8 @@
     "mysql": "^2.15.0",
     "request": "^2.83.0",
     "utf8": "^3.0.0",
-    "website-scraper": "^3.3.2"
+    "website-scraper": "^3.3.2",
+    "xlsx-to-json": "^0.3.0"
   },
   "devDependencies": {},
   "scripts": {

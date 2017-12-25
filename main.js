@@ -13,27 +13,35 @@ connection.connect(function(err) {
       console.log("Connected!");
 });
 
-// START forech----------------
-var url = 'https://dribbble.com/';
-var options = {
-  urls: [url],
-  directory: './TEST',
-  recursive: true,
-  domain: require('url').parse(url).hostname,
-  connection: connection,
-  // maxDepth: 1,
-    sources: [
-    // {selector: 'img', attr: 'src'},
-    // {selector: 'link[rel="stylesheet"]', attr: 'href'},
-    // {selector: 'script', attr: 'src'}
-  ]
-};
+connection.query('SELECT * FROM domains', function (error, results, fields) {
+  if (error) throw error;
+  // START forech
+  for (var i = 0; i < results.length; i++) {
+    var url = 'https://' + results[i]['domain'];
+    var options = {
+      urls: [url],
+      directory: './TEST',
+      recursive: true,
+      domain: results[i]['domain'],
+      connection: connection,
+      domain_id: results[i]['id'],
+      // maxDepth: 1,
+        sources: [
+        // {selector: 'img', attr: 'src'},
+        // {selector: 'link[rel="stylesheet"]', attr: 'href'},
+        // {selector: 'script', attr: 'src'}
+      ]
+    };
 
-scrape(options).then((result) => {
-    console.log('SUCCES');
-    connection.end();
-}).catch((err) => {
-    console.log('FAIL');
-    connection.end();
+    scrape(options).then((result) => {
+        console.log('SUCCES');
+        // connection.end();
+    }).catch((err) => {
+        console.log('FAIL');
+        // connection.end();
+    });
+  }
+//END forech
 });
-// END forech
+
+// connection.end();
