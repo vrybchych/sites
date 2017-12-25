@@ -17,7 +17,7 @@ connection.query('SELECT * FROM domains', function (error, results, fields) {
   if (error) throw error;
   // START forech
   for (var i = 0; i < results.length; i++) {
-    var url = 'https://' + results[i]['domain'];
+    var url = 'http://' + results[i]['domain'];
     var options = {
       urls: [url],
       directory: './TEST',
