@@ -1,0 +1,19 @@
+{
+  "name": "site_download",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "mysql": "^2.15.0",
+    "request": "^2.83.0",
+    "utf8": "^3.0.0",
+    "website-scraper": "^3.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
