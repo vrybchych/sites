@@ -18,13 +18,16 @@ connection.query('SELECT * FROM domains', function (error, results, fields) {
   // START forech
   for (var i = 0; i < results.length; i++) {
     var url = 'http://' + results[i]['domain'];
+    var additional = {
+      domain: results[i]['domain'],
+      connection: connection,
+      domain_id: results[i]['id'],
+    };
     var options = {
       urls: [url],
       directory: './TEST',
       recursive: true,
-      domain: results[i]['domain'],
-      connection: connection,
-      domain_id: results[i]['id'],
+      additional: additional,
       // maxDepth: 1,
         sources: [
         // {selector: 'img', attr: 'src'},
