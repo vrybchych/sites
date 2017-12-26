@@ -18,9 +18,15 @@ connection.query('SELECT * FROM domains', function (error, results, fields) {
   // START forech
   for (var i = 0; i < results.length; i++) {
     //update status
+    go(results, i);
+  }
+//END foreach
+});
+
+function go(results, i) {
     connection.query( 'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
                       [Math.round(+new Date()/1000), '1', results[i]['id']],
-                      function (error, results1, fields) {});
+                      function (error, res, fields) {});
     var url = 'http://' + results[i]['domain'];
     var additional = {
       domain: results[i]['domain'],
@@ -42,17 +48,14 @@ connection.query('SELECT * FROM domains', function (error, results, fields) {
     scrape(options).then((result) => {
         //SET STATUS 2
         console.log('TEST: ' + result);
-        // connection.query(
-          // 'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
-          // [Math.round(+new Date()/1000), '2', results[0][domain_id],
-          // function (error, results, fields) {});
+        connection.query(
+          'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
+          [Math.round(+new Date()/1000), '2', results[i][domain_id]],
+          function (error, res, fields) {});
         console.log('SUCCES');
     }).catch((err) => {
         console.log('FAIL');
-
     });
-  }
-//END foreach
-});
+}
 
 // connection.end();
