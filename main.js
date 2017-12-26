@@ -13,14 +13,15 @@ connection.connect(function(err) {
       console.log("Connected!");
 });
 
+//ADD: domains ONLY with status 0/1 and last update date!!!!!!!!!!!
 connection.query('SELECT * FROM domains', function (error, results, fields) {
   if (error) throw error;
-  // START forech
   for (var i = 0; i < results.length; i++) {
-    //update status
+    /*
+    ** get all htmls from site
+    */
     go(results, i);
   }
-//END foreach
 });
 
 function go(results, i) {
@@ -39,11 +40,7 @@ function go(results, i) {
       recursive: true,
       additional: additional,
       // maxDepth: 1,
-        sources: [
-        // {selector: 'img', attr: 'src'},
-        // {selector: 'link[rel="stylesheet"]', attr: 'href'},
-        // {selector: 'script', attr: 'src'}
-      ]
+        sources: [ ]
     };
     scrape(options).then((result) => {
         //SET STATUS 2
