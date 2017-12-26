@@ -44,10 +44,9 @@ function go(results, i) {
     };
     scrape(options).then((result) => {
         //SET STATUS 2
-        console.log('TEST: ' + result);
         connection.query(
           'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
-          [Math.round(+new Date()/1000), '2', results[i][domain_id]],
+          [Math.round(+new Date()/1000), '2', results[i]['id']],
           function (error, res, fields) {});
         console.log('SUCCES');
     }).catch((err) => {
