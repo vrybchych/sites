@@ -6,6 +6,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "mysql": "^2.15.0",
+    "regex": "^0.1.1",
     "request": "^2.83.0",
     "utf8": "^3.0.0",
     "website-scraper": "^3.3.2",
