@@ -54,6 +54,7 @@ function go(domain) {
         getFreeDomainsAndGo();
         console.log('SUCCES');
     }).catch((err) => {
+        getFreeDomainsAndGo();
         console.log('FAIL');
     });
 }
