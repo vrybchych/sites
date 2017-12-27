@@ -13,26 +13,32 @@ connection.connect(function(err) {
       console.log("Connected!");
 });
 
-//ADD: domains ONLY with status 0/1 and last update date!!!!!!!!!!!
-connection.query('SELECT * FROM domains', function (error, results, fields) {
-  if (error) throw error;
-  for (var i = 0; i < results.length; i++) {
-    /*
-    ** get all htmls from site
-    */
-    go(results, i);
-  }
-});
+function updateStatus(id, status) {
+  var time = Math.round(+new Date()/1000);
 
-function go(results, i) {
-    connection.query( 'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
-                      [Math.round(+new Date()/1000), '1', results[i]['id']],
-                      function (error, res, fields) {});
-    var url = 'http://' + results[i]['domain'];
+  connection.query(
+          'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
+          [time, status, id],
+          function (error, results, fields) {});
+}
+
+//ADD: domains ONLY with status 0/1 and last update date!!!!!!!!!!!
+function getFreeDomainsAndGo() {
+  connection.query('SELECT * FROM domains WHERE status = 0', function (error, results, fields) {
+    if (error) throw error;
+    go(results[0]);    
+  });
+}
+getFreeDomainsAndGo();
+
+function go(domain) {
+    // updateStatus(domain['id'], 1)
+    setInterval(updateStatus.bind(null, domain['id'], 1), 3000);
+    var url = 'http://' + domain['domain'];
     var additional = {
-      domain: results[i]['domain'],
+      domain: domain['domain'],
       connection: connection,
-      domain_id: results[i]['id'],
+      domain_id: domain['id'],
     };
     var options = {
       urls: [url],
@@ -44,10 +50,8 @@ function go(results, i) {
     };
     scrape(options).then((result) => {
         //SET STATUS 2
-        connection.query(
-          'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
-          [Math.round(+new Date()/1000), '2', results[i]['id']],
-          function (error, res, fields) {});
+        updateStatus(domain['id'], 2);
+        getFreeDomainsAndGo();
         console.log('SUCCES');
     }).catch((err) => {
         console.log('FAIL');

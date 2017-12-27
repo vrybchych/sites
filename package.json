@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "asyncawait": "^1.0.6",
     "cheerio": "^1.0.0-rc.2",
     "mysql": "^2.15.0",
     "regex": "^0.1.1",
     "request": "^2.83.0",
+    "sync": "git+https://github.com/ybogdanov/node-sync.git",
+    "sync-each": "^1.0.1",
+    "sync-exec": "^0.6.2",
     "utf8": "^3.0.0",
     "website-scraper": "^3.3.2",
     "xlsx-to-json": "^0.3.0"
