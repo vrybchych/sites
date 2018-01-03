@@ -47,6 +47,33 @@ function go(domain) {
       urlFilter: function(url){
         return url.indexOf(domain['domain']) != -1;
       },
+      resourceSaver: class MyResourceSaver {
+        saveResource (resource) {
+            //START TEST
+            console.log('resource.domain: ' + resource.additional.domain);
+            console.log('url: ' + resource.url);
+            console.log('filename: ' + resource.filename);
+            console.log('type: ' + resource.type);
+            console.log('length: ' + resource.text.length + '\n');
+            //END TEST
+                      
+            if (resource.text.length > 200000 || resource.type !== 'html')
+              return false;
+
+            //base64----------------
+            let buff = new Buffer(resource.text);  
+            let base64data = buff.toString('base64');
+
+            var data  = {domain_id: resource.additional.domain_id, url: resource.url, html: base64data};
+            resource.additional.connection.query('INSERT INTO pages SET ?', data, function (error, results, fields) {
+              // if (error) throw error;
+              // Neat!
+            });
+
+            return true;
+        }
+        errorCleanup (err) {/* code to remove all previously saved files in case of error */}
+      },
       maxDepth: 5,
         sources: [ ]
     };
