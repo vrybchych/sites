@@ -44,7 +44,10 @@ function go(domain) {
       directory: './TEST',
       recursive: true,
       additional: additional,
-      maxDepth: 30,
+      urlFilter: function(url){
+        return url.indexOf(domain['domain']) != -1;
+      },
+      maxDepth: 5,
         sources: [ ]
     };
     scrape(options, (error, result) => {
