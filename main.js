@@ -17,7 +17,7 @@ function updateStatus(id, status) {
   var time = Math.round(+new Date()/1000);
 
   connection.query(
-          'UPDATE domains SET update_time = ?, status = ? WHERE id = ?',
+          'UPDATE domains SET update_time = ?, status = ? WHERE id = ? AND status != 2',
           [time, status, id],
           function (error, results, fields) {});
 }
@@ -32,7 +32,6 @@ function getFreeDomainsAndGo() {
 getFreeDomainsAndGo();
 
 function go(domain) {
-    // updateStatus(domain['id'], 1)
     setInterval(updateStatus.bind(null, domain['id'], 1), 3000);
     var url = 'http://' + domain['domain'];
     var additional = {
@@ -45,18 +44,35 @@ function go(domain) {
       directory: './TEST',
       recursive: true,
       additional: additional,
-      // maxDepth: 1,
+      maxDepth: 30,
         sources: [ ]
     };
-    scrape(options).then((result) => {
-        //SET STATUS 2
-        updateStatus(domain['id'], 2);
+    scrape(options, (error, result) => {
+        if (error) {          
+          console.log('FAIL');
+        }
+        else {
+          //SET STATUS 2
+          updateStatus(domain['id'], 2);
+          console.log('domain[id]: ', domain['id']);
+          console.log('SUCCES');
+        }
         getFreeDomainsAndGo();
-        console.log('SUCCES');
-    }).catch((err) => {
-        getFreeDomainsAndGo();
-        console.log('FAIL');
     });
+
+    /*
+    ** PROMISES
+    */
+
+    // scrape(options).then((result) => {
+    //     //SET STATUS 2
+    //     updateStatus(domain['id'], 2);
+    //     getFreeDomainsAndGo();
+    //     console.log('SUCCES');
+    // }).catch((err) => {
+    //      getFreeDomainsAndGo();
+    //     console.log('FAIL');
+    // });
 }
 
 // connection.end();
