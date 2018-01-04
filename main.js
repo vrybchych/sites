@@ -34,23 +34,17 @@ getFreeDomainsAndGo();
 function go(domain) {
     setInterval(updateStatus.bind(null, domain['id'], 1), 3000);
     var url = 'http://' + domain['domain'];
-    var additional = {
-      domain: domain['domain'],
-      connection: connection,
-      domain_id: domain['id'],
-    };
     var options = {
       urls: [url],
       directory: './TEST',
       recursive: true,
-      additional: additional,
       urlFilter: function(url){
-        return url.indexOf(domain['domain']) != -1;
+        return require('url').parse(url).hostname.indexOf(domain['domain']) != -1;
       },
       resourceSaver: class MyResourceSaver {
         saveResource (resource) {
             //START TEST
-            console.log('resource.domain: ' + resource.additional.domain);
+            console.log('domain[domain]: ' + domain['domain']);
             console.log('url: ' + resource.url);
             console.log('filename: ' + resource.filename);
             console.log('type: ' + resource.type);
@@ -64,8 +58,8 @@ function go(domain) {
             let buff = new Buffer(resource.text);  
             let base64data = buff.toString('base64');
 
-            var data  = {domain_id: resource.additional.domain_id, url: resource.url, html: base64data};
-            resource.additional.connection.query('INSERT INTO pages SET ?', data, function (error, results, fields) {
+            var data  = {domain_id: domain['id'], url: resource.url, html: base64data};
+            connection.query('INSERT INTO pages SET ?', data, function (error, results, fields) {
               // if (error) throw error;
               // Neat!
             });
@@ -74,8 +68,8 @@ function go(domain) {
         }
         errorCleanup (err) {/* code to remove all previously saved files in case of error */}
       },
-      maxDepth: 5,
-        sources: [ ]
+     // maxDepth: 5,
+      sources: [ ]
     };
     scrape(options, (error, result) => {
         if (error) {          
