@@ -51,7 +51,8 @@ function go(domain) {
             console.log('length: ' + resource.text.length + '\n');
             //END TEST
                       
-            if (resource.text.length > 200000 || resource.type !== 'html')
+            if (resource.text.length > 200000 || resource.type !== 'html' ||
+              require('url').parse(resource.url).hostname.indexOf(domain['domain']) == -1)
               return false;
 
             //base64----------------
