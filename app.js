@@ -23,7 +23,6 @@ function updateStatus(id, status) {
 }
 
 //ADD: domains ONLY with status 0/1 and last update date!!!!!!!!!!!
-var startTime = Math.floor(Date.now() / 1000);
 
 function getFreeDomainsAndGo() {
   connection.query('SELECT * FROM domains WHERE status = 0', function (error, results, fields) {
@@ -35,11 +34,7 @@ getFreeDomainsAndGo();
 
 function go(domain) {
     setInterval(updateStatus.bind(null, domain['id'], 1), 3000);
-    if ( (Math.floor(Date.now() / 1000) - startTime) > 5) {
-      var startTime = Math.floor(Date.now() / 1000);
-      getFreeDomainsAndGo();
-      return ;
-    }
+
     var url = 'http://' + domain['domain'];
     var options = {
       urls: [url],

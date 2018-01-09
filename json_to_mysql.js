@@ -14,7 +14,6 @@ connection.connect(function(err) {
 
 var arr = require('./domains');
 
-// console.log(Math.round(+new Date()/1000));
 for (var i = 0; i < arr.length; i++) {
 	var time = Math.round(+new Date()/1000);
 	var data = {domain: arr[i]['Referring Domain'], status: 0, update_time: time};
