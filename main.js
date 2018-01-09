@@ -36,7 +36,8 @@ getFreeDomainsAndGo();
 function go(domain) {
     setInterval(updateStatus.bind(null, domain['id'], 1), 3000);
     if ( (Math.floor(Date.now() / 1000) - startTime) > 5) {
-      go();
+      var startTime = Math.floor(Date.now() / 1000);
+      getFreeDomainsAndGo();
       return ;
     }
     var url = 'http://' + domain['domain'];
