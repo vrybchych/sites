@@ -23,16 +23,22 @@ function updateStatus(id, status) {
 }
 
 //ADD: domains ONLY with status 0/1 and last update date!!!!!!!!!!!
+var startTime = Math.floor(Date.now() / 1000);
+
 function getFreeDomainsAndGo() {
   connection.query('SELECT * FROM domains WHERE status = 0', function (error, results, fields) {
     if (error) throw error;
-    go(results[0]);    
+    go(results[0]);
   });
 }
 getFreeDomainsAndGo();
 
 function go(domain) {
     setInterval(updateStatus.bind(null, domain['id'], 1), 3000);
+    if ( (Math.floor(Date.now() / 1000) - startTime) > 5) {
+      go();
+      return ;
+    }
     var url = 'http://' + domain['domain'];
     var options = {
       urls: [url],
@@ -50,13 +56,13 @@ function go(domain) {
             console.log('type: ' + resource.type);
             console.log('length: ' + resource.text.length + '\n');
             //END TEST
-                      
+
             if (resource.text.length > 200000 || resource.type !== 'html' ||
               require('url').parse(resource.url).hostname.indexOf(domain['domain']) == -1)
               return false;
 
             //base64----------------
-            let buff = new Buffer(resource.text);  
+            let buff = new Buffer(resource.text);
             let base64data = buff.toString('base64');
 
             var data  = {domain_id: domain['id'], url: resource.url, html: base64data};
@@ -73,13 +79,13 @@ function go(domain) {
       sources: [ ]
     };
     scrape(options, (error, result) => {
-        if (error) {          
+        if (error) {
           console.log('FAIL');
         }
         else {
           //SET STATUS 2
           updateStatus(domain['id'], 2);
-          console.log('domain[id]: ', domain['id']);
+          console.log('domain[id]: ', domain['id']); //TEST TEST TEST TEST TEST
           console.log('SUCCES');
         }
         getFreeDomainsAndGo();
