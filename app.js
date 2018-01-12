@@ -23,6 +23,7 @@ function updateStatus(id, status) {
 }
 
 //ADD: domains ONLY with status 0/1 and last update date!!!!!!!!!!!
+// var startTime = Math.floor(Date.now() / 1000);
 
 function getFreeDomainsAndGo() {
   connection.query('SELECT * FROM domains WHERE status = 0', function (error, results, fields) {
@@ -40,6 +41,9 @@ function go(domain) {
       urls: [url],
       directory: './TEST',
       recursive: true,
+      onResourceSaved: (resource) => {
+          resource.text = null;
+      },
       urlFilter: function(url){
         return require('url').parse(url).hostname.indexOf(domain['domain']) != -1;
       },
@@ -74,6 +78,7 @@ function go(domain) {
      // maxDepth: 5,
       sources: [ ]
     };
+
     scrape(options, (error, result) => {
         if (error) {
           console.log('FAIL');
@@ -81,25 +86,11 @@ function go(domain) {
         else {
           //SET STATUS 2
           updateStatus(domain['id'], 2);
-          console.log('domain[id]: ', domain['id']); //TEST TEST TEST TEST TEST
           console.log('SUCCES');
         }
-        getFreeDomainsAndGo();
+        setTimeout(()=>{process.exit();}, 10000);
+        // getFreeDomainsAndGo();
     });
-
-    /*
-    ** PROMISES
-    */
-
-    // scrape(options).then((result) => {
-    //     //SET STATUS 2
-    //     updateStatus(domain['id'], 2);
-    //     getFreeDomainsAndGo();
-    //     console.log('SUCCES');
-    // }).catch((err) => {
-    //      getFreeDomainsAndGo();
-    //     console.log('FAIL');
-    // });
 }
 
 // connection.end();
